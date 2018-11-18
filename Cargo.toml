@@ -1,0 +1,9 @@
+[package]
+name = "coolstuff"
+version = "0.1.0"
+authors = ["Miles Rufat-Latre <rufmiles@amazon.com>"]
+edition = "2018"
+
+[dependencies]
+uuid={version = "0.7", features = ["v4"]}
+combine="3.6"
