@@ -1,5 +1,5 @@
 [package]
-name = "coolstuff"
+name = "logics"
 version = "0.1.0"
 authors = ["Miles Rufat-Latre <miles.rufatlatre@gmail.com>"]
 edition = "2018"
