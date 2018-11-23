@@ -1,6 +1,18 @@
 extern crate combine;
 extern crate uuid;
 
+#[macro_use] extern crate lalrpop_util;
+lalrpop_mod!(pub input_grammar); // synthesized by LALRPOP
+
+#[test]
+fn testlalr() {
+    assert_eq!(input_grammar::ExprParser::new().parse("22").unwrap(), Value::Bound("22".to_string()));
+    assert_eq!(input_grammar::ExprParser::new().parse("(22)").unwrap(), Value::Stmt(vec![Value::Bound("22".to_string())]));
+    assert_eq!(input_grammar::ExprParser::new().parse("((((22))))").unwrap(),
+        Value::Stmt(vec![Value::Stmt(vec![Value::Stmt(vec![Value::Stmt(vec![Value::Bound("22".to_string())])])])]));
+    assert!(input_grammar::ExprParser::new().parse("((22)").is_err());
+}
+
 mod token;
 mod value;
 
@@ -78,21 +90,21 @@ a
 fn main() {
     println!("{}", Uuid::new_v4());
 
-    let a = Uuid::new_v4();
-    let b = Uuid::new_v4();
-    let c = Uuid::new_v4();
-    let d = Uuid::new_v4();
+    let a = Uuid::new_v4().to_string();
+    let b = Uuid::new_v4().to_string();
+    let c = Uuid::new_v4().to_string();
+    let d = Uuid::new_v4().to_string();
 
     let mut binds = HashMap::new();
     let v1 = Value::Stmt(vec![
         Value::Implies,
-        Value::Unbound(a),
+        Value::Unbound(a.clone()),
         Value::Unbound(a),
         Value::Unbound(b),
     ]);
     let v2 = Value::Stmt(vec![
         Value::Implies,
-        Value::Bound(d),
+        Value::Bound(d.clone()),
         Value::Bound(d),
         Value::Unbound(c),
     ]);
@@ -102,6 +114,6 @@ fn main() {
 
     println!(
         "LEXED STUFF => {:?}",
-        many1::<Vec<Token>, _>(lexer()).parse(" ( false implies () oh my 'wh_oopsey ) ")
+        many1::<Vec<Token>, _>(lexer()).parse(" (false implies () oh my 'wh_oopsey ) ")
     );
 }

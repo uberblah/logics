@@ -2,24 +2,24 @@ use std::collections::HashMap;
 use std::iter::{empty, once};
 use uuid::Uuid;
 
-#[derive(Clone, Hash, PartialEq, Eq)]
+#[derive(Clone, Debug, Hash, PartialEq, Eq)]
 pub enum Value {
     False,
     Implies,
-    Bound(Uuid),
-    Unbound(Uuid),
+    Bound(String),
+    Unbound(String),
     Stmt(Vec<Value>),
 }
 impl Value {
-    pub fn unbounds(&self) -> Box<dyn Iterator<Item = Uuid>> {
+    pub fn unbounds(&self) -> Box<dyn Iterator<Item = String>> {
         match self {
-            Value::Unbound(uuid) => Box::new(once(uuid.clone())) as Box<dyn Iterator<Item = Uuid>>,
+            Value::Unbound(uuid) => Box::new(once(uuid.clone())) as Box<dyn Iterator<Item = String>>,
             Value::Stmt(stmt) => Box::new(stmt.clone().into_iter().flat_map(|val| val.unbounds()))
-                as Box<dyn Iterator<Item = Uuid>>,
-            _ => Box::new(empty()) as Box<dyn Iterator<Item = Uuid>>,
+                as Box<dyn Iterator<Item = String>>,
+            _ => Box::new(empty()) as Box<dyn Iterator<Item = String>>,
         }
     }
-    pub fn r#match(&self, other: &Value, binds: &mut HashMap<Uuid, Value>) -> bool {
+    pub fn r#match(&self, other: &Value, binds: &mut HashMap<String, Value>) -> bool {
         match self {
             Value::Unbound(u1) => {
                 if let Some(v1) = binds.get(u1) {

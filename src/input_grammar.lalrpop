@@ -1,0 +1,31 @@
+use crate::value::Value;
+use std::str::FromStr;
+
+grammar;
+
+pub Expr: Value = {
+    <s:Stmt> => s,
+    <a:Atom> => a
+}
+
+Stmt: Value = {
+    r"\(\s*" <l:List> r"\s*\)" => Value::Stmt(l)
+}
+
+List: Vec<Value> = {
+    <e:Expr> => vec![e],
+    <l:List> r"\s+" <e:Expr> => {
+        let mut lcpy = l.clone();
+        lcpy.push(e);
+        lcpy
+    }
+}
+
+Atom: Value = {
+    "implies" => Value::Implies,
+    "false" => Value::False,
+    <n:Name> => Value::Bound(n),
+    "<" <n:Name> ">" => Value::Unbound(n),
+};
+
+Name: String = <s:r"[^\s<>(){}\[\]]+"> => String::from_str(s).unwrap();

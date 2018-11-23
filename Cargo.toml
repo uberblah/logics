@@ -4,6 +4,13 @@ version = "0.1.0"
 authors = ["Miles Rufat-Latre <miles.rufatlatre@gmail.com>"]
 edition = "2018"
 
+build = "build.rs" # LALRPOP parser generation
+
 [dependencies]
 uuid={version = "0.7", features = ["v4"]}
 combine="3.6"
+lalrpop-util = "0.16"
+regex = "1.0"
+
+[build-dependencies]
+lalrpop = "0.16"
